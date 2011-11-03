@@ -228,6 +228,8 @@ sub __create_return_url {
     my $cfg = $app->config;
 
     my $cgi_path = $app->config('CGIPath');
+    $cgi_path = $app->base . $cgi_path
+      unless $cgi_path =~ m!^https?://!;
     $cgi_path .= '/' unless $cgi_path =~ m!/$!;
 
     my $blog_id = $q->param("blog_id");
