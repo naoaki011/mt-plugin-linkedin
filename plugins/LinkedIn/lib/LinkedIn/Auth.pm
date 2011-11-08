@@ -22,6 +22,7 @@ sub get_secret_keys {
 
 sub condition {
     my ($blog, $reason) = @_;
+    return 1 unless $blog;
     my %required = (
         'Carp' => '0',
         'Crypt::SSLeay' => '0',
