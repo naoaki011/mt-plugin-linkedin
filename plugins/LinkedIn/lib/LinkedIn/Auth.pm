@@ -44,7 +44,6 @@ sub condition {
             push @not_found, "$mod version $ver";
         }
     }
-
     if (@not_found) {
         $$reason = "Please install these Perl modules: ".join(", ", @not_found);
         return 0;
@@ -53,9 +52,9 @@ sub condition {
     my %app_keys = get_secret_keys($app);
     if (not $app_keys{consumer_key}) {
         my $plugin = $app->component($PluginKey);
-        $$reason = '<a href="?__mode=cfg_plugins&amp;blog_id=' . $app->blog->id . '">' .
-        $plugin->translate('Set up LinkedIn Commenters plugin')  .
-        '</a>';
+        $$reason = '<a href="?__mode=cfg_plugins&amp;blog_id=' . $app->blog->id . '">'
+                 . $plugin->translate('Set up LinkedIn Commenters plugin')
+                 . '</a>';
         return 0;
     }
     return 1;
