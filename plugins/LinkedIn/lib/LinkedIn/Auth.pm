@@ -14,7 +14,9 @@ sub instance {
 sub get_secret_keys {
     my ($app) = @_;
     my $plugin = instance($app);
-    my $blog_id = $app->blog->id;
+    my $blog = $app->blog;
+    return unless $blog;
+    my $blog_id = $blog->id;
     my $consumer_key = $plugin->get_config_value('consumer_key', "blog:$blog_id");
     my $consumer_secret = $plugin->get_config_value('consumer_secret', "blog:$blog_id");
     return (consumer_key => $consumer_key, consumer_secret => $consumer_secret);
@@ -52,6 +54,8 @@ sub condition {
     my $app = MT->instance();
     my %app_keys = get_secret_keys($app);
     if (not $app_keys{consumer_key}) {
+        my $blog = $app->blog;
+        return 0 unless $blog;
         my $plugin = $app->component($PluginKey);
         $$reason = '<a href="?__mode=cfg_plugins&amp;blog_id=' . $app->blog->id . '">'
                  . $plugin->translate('Set up LinkedIn Commenters plugin')
@@ -225,7 +229,6 @@ sub commenter_auth_params {
 sub __create_return_url {
     my ($app, $session_key) = @_;
     my $q        = $app->param;
-    my $cfg = $app->config;
 
     my $cgi_path = $app->config('CGIPath');
     $cgi_path = $app->base . $cgi_path
@@ -249,7 +252,7 @@ sub __create_return_url {
         push @params, "entry_id=$entry_id";
     }
     
-    return $cgi_path . $cfg->CommentScript ."?". join('&', @params);
+    return $cgi_path . $app->config->CommentScript ."?". join('&', @params);
 }
 
 sub check_api_key_secret {
@@ -275,5 +278,7 @@ sub check_api_key_secret {
     }
     return 1;
 }
+
+sub password_exists {0}
 
 1;
